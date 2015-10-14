@@ -11,7 +11,7 @@ Feature: Sign in to the website
       | password | bar |
     And I press "submit"
     Then I should be on "/#!/"
-    And I should see "Administration"
+    And I should see " "
 
   @javascript
   Scenario: Log in with bad credentials
