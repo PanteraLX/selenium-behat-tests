@@ -1,4 +1,4 @@
-# A Behat/Mink test of graviphoton and graviton
+# A Behat/Mink tests
 
 ## Usage 
 
