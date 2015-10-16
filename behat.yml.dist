@@ -1,8 +1,22 @@
 default:
   context:
-    class:  'InheritedFeatureContext'
+    class: 'ApiFeatureContext'
+  paths:
+    features: features
+    bootstrap: %behat.paths.features%/bootstrap
+
+backend:
+  context:
+    class: 'ApiFeatureContext'
+  paths:
+    features: features
+    bootstrap: %behat.paths.features%/bootstrap
+
+frontend:
+  context:
+    class: 'InheritedFeatureContext'
   extensions:
-    Behat\MinkExtension\Extension:
-      base_url:  'http://localhost:3000/'
-      goutte:    ~
-      selenium2: ~
+      Behat\MinkExtension\Extension:
+        base_url:  'http://localhost:3000/'
+        goutte:    ~
+        selenium2: ~
