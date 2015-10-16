@@ -40,6 +40,10 @@ class ApiFeatureContext extends BehatContext
      */
     protected $response;
     /**
+     * @var $httpMethod
+     */
+    protected $httpMethod;
+    /**
      * @var $uri
      */
     protected $uri;
@@ -47,14 +51,26 @@ class ApiFeatureContext extends BehatContext
      * @var array
      */
     protected $headers;
+
     /**
      * Construct
      */
     public function __construct()
     {
     }
+
     /**
-     * @Given I am on URI :uri
+    * @Given /^I am using a "([^"]*)"-request/
+     *
+     * @param $httpMethod
+     */
+    public function iAmUsing($httpMethod)
+    {
+        $this->$httpMethod = $httpMethod;
+    }
+
+    /**
+     * @Given /^I am on URI "([^"]*)"$/
      *
      * @param $uri
      */
@@ -62,6 +78,7 @@ class ApiFeatureContext extends BehatContext
     {
         $this->uri = $uri;
     }
+
     /**
      * @Given /^I have the payload:$/
      *
@@ -71,6 +88,7 @@ class ApiFeatureContext extends BehatContext
     {
         $this->requestPayload = $requestPayload;
     }
+
     /**
      * @Given /^I set the "([^"]*)" header to be "([^"]*)"$/
      *
@@ -81,17 +99,17 @@ class ApiFeatureContext extends BehatContext
     {
         $this->headers[$headerName] = $value;
     }
+
     /**
-     * @When /^I request "(GET|PUT|POST|DELETE) ([^"]*)"$/
+     * @When /^I request "([^"]*)"$/
      *
-     * @param $httpMethod
      * @param $resource
      */
-    public function iRequest($httpMethod, $resource)
+    public function iRequest($resource)
     {
         $this->client = new Client();
         $resource = $this->uri . $resource;
-        switch (strtoupper($httpMethod)) {
+        switch (strtoupper($this->httpMethod)) {
             default:
                 $this->response = $this->client
                     ->get($resource)
@@ -116,8 +134,9 @@ class ApiFeatureContext extends BehatContext
                 break;
         }
     }
+
     /**
-     * @Then the response status code should be :expectedStatusCode
+     * @Then /^the response status code should be "([^"]*)"$/
      *
      * @param $expectedStatusCode
      */
@@ -126,18 +145,20 @@ class ApiFeatureContext extends BehatContext
         $statusCode = $this->response->getStatusCode();
         \PHPUnit_Framework_Assert::assertSame((int) $expectedStatusCode, (int) $statusCode);
     }
+
     /**
-     * @Then the content type should be :expectedResponseType
+     * @Then /^the content type should be "([^"]*)"$/
      *
      * @param $expectedContentType
      */
-    public function theResponseTypeShouldBe($expectedContentType)
+    public function theContentTypeShouldBe($expectedContentType)
     {
         $contentTypeArray = explode(';',$this->response->getContentType());
         \PHPUnit_Framework_Assert::assertSame($expectedContentType, $contentTypeArray[0]);
     }
+
     /**
-     * @Then the :headerName header should be :expectedHeaderValue
+     * @Then /^the "([^"]*)" header should be "([^"]*)"$/
      *
      * @param $headerName
      * @param $expectedHeaderValue
@@ -145,9 +166,11 @@ class ApiFeatureContext extends BehatContext
      */
     public function theHeaderShouldBe($headerName, $expectedHeaderValue)
     {
-        $header = $this->response->getHeaderLines($headerName);
-        throw new PendingException();
+        $headerValue = $this->response->getHeader($headerName)->raw()[0];
+        var_dump($headerValue);
+        \PHPUnit_Framework_Assert::assertSame($expectedHeaderValue, $headerValue);
     }
+
     /**
      * @Then the payload should be:
      *
@@ -159,6 +182,7 @@ class ApiFeatureContext extends BehatContext
         $this->responsePayload = $responsePayload;
         throw new PendingException();
     }
+
     /**
      * Checks the response exists and returns it.
      *
