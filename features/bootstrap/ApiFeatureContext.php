@@ -167,7 +167,6 @@ class ApiFeatureContext extends BehatContext
     public function theHeaderShouldBe($headerName, $expectedHeaderValue)
     {
         $headerValue = $this->response->getHeader($headerName)->raw()[0];
-        var_dump($headerValue);
         \PHPUnit_Framework_Assert::assertSame($expectedHeaderValue, $headerValue);
     }
 
