@@ -3,7 +3,7 @@ Feature: Sign in to the website
   As a visitor
   I need to be able to log in to the website
 
-  @javascript
+  @mink:selenium2
   Scenario: Log in with username and password
     Given I am on "/#!/login/"
     When I fill in the following:
@@ -13,7 +13,7 @@ Feature: Sign in to the website
     Then I should be on "/#!/"
     And I should see " "
 
-  @javascript
+  @mink:selenium2
   Scenario: Log in with bad credentials
     Given I am on "/#!/login/"
     When I fill in the following:
